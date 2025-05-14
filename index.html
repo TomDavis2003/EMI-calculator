@@ -190,24 +190,36 @@
       return new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(number);
     }
 
+    function calculateEMI(principal, rate, months) {
+      const monthlyRate = rate / 12 / 100;
+      const emi = (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) / 
+                  (Math.pow(1 + monthlyRate, months) - 1);
+      return emi;
+    }
+
     function calculate() {
       const income = parseFloat(elements.grossIncome.value);
       const years = parseInt(elements.tenure.value);
       const rate = parseFloat(elements.interestRate.value);
       const otherEmis = parseFloat(elements.otherEMIs.value);
 
-      const maxEMI = income * 0.4 - otherEmis;
+      const maxAffordableEMI = income * 0.4 - otherEmis;
       
-      if (maxEMI < 0) {
-        elements.results.eligibility.textContent = '0';
-        elements.results.emi.textContent = '0';
+      if (maxAffordableEMI <= 0) {
+        elements.results.eligibility.textContent = '₹0';
+        elements.results.emi.textContent = '₹0';
         return;
       }
 
       const monthlyRate = rate / 12 / 100;
       const months = years * 12;
-      const loanAmount = (maxEMI * (Math.pow(1 + monthlyRate, months) - 1)) / 
+      
+      // Calculate eligible loan amount
+      const loanAmount = (maxAffordableEMI * (Math.pow(1 + monthlyRate, months) - 1)) / 
                         (monthlyRate * Math.pow(1 + monthlyRate, months));
+
+      // Calculate actual EMI for the eligible loan amount
+      const actualEMI = calculateEMI(loanAmount, rate, months);
 
       // Update displays
       elements.labels.grossIncome.textContent = formatINR(income);
@@ -216,14 +228,12 @@
       elements.labels.otherEMIs.textContent = formatINR(otherEmis);
       
       elements.results.eligibility.textContent = `₹${formatINR(Math.round(loanAmount))}`;
-      elements.results.emi.textContent = `₹${formatINR(Math.round(maxEMI))}`;
+      elements.results.emi.textContent = `₹${formatINR(Math.round(actualEMI))}`;
     }
 
     // Add event listeners
-    Object.values(elements).forEach(element => {
-      if (element instanceof HTMLInputElement) {
-        element.addEventListener('input', calculate);
-      }
+    [elements.grossIncome, elements.tenure, elements.interestRate, elements.otherEMIs].forEach(element => {
+      element.addEventListener('input', calculate);
     });
 
     // Initial calculation
