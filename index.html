@@ -2,94 +2,229 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home Loan Eligibility Calculator</title>
   <style>
-    body { font-family: Arial; padding: 20px; }
-    .container { max-width: 600px; margin: auto; }
-    .input-group { margin-bottom: 20px; }
-    label { display: block; margin-bottom: 5px; }
-    input[type="range"], input[type="number"] { width: 100%; }
-    .results { margin-top: 30px; font-size: 1.2em; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 2.2em;
+      font-weight: 600;
+    }
+
+    .input-group {
+      margin-bottom: 30px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 12px;
+      transition: transform 0.2s ease;
+    }
+
+    .input-group:hover {
+      transform: translateX(5px);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      color: #34495e;
+      font-weight: 500;
+      font-size: 1.1em;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      background: #e0e0e0;
+      outline: none;
+      -webkit-appearance: none;
+      accent-color: #3498db;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      background: #3498db;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      background: #2980b9;
+    }
+
+    .value-display {
+      font-size: 1.2em;
+      color: #3498db;
+      font-weight: 600;
+      margin-left: 5px;
+    }
+
+    .results {
+      margin-top: 40px;
+      padding: 30px;
+      background: #3498db;
+      border-radius: 15px;
+      color: white;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(52,152,219,0.3);
+    }
+
+    .results p {
+      margin: 15px 0;
+      font-size: 1.3em;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 30px;
+    }
+
+    button:hover {
+      background: #2980b9;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(52,152,219,0.4);
+    }
+
+    .calculator-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .calculator-header p {
+      color: #7f8c8d;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Calculate Home Loan Eligibility</h2>
+    <div class="calculator-header">
+      <h2>Home Loan Eligibility Calculator</h2>
+      <p>Calculate your home loan eligibility and monthly EMI instantly</p>
+    </div>
 
     <div class="input-group">
-      <label>Gross Income (Monthly): ₹<span id="grossIncomeLabel">25000</span></label>
+      <label>Gross Monthly Income: <span class="value-display" id="grossIncomeLabel">25,000</span></label>
       <input type="range" min="10000" max="1000000" step="1000" value="25000" id="grossIncome">
     </div>
 
     <div class="input-group">
-      <label>Tenure (Years): <span id="tenureLabel">23</span></label>
+      <label>Loan Tenure (Years): <span class="value-display" id="tenureLabel">23</span></label>
       <input type="range" min="1" max="30" value="23" id="tenure">
     </div>
 
     <div class="input-group">
-      <label>Interest Rate (% p.a.): <span id="interestLabel">8.5</span>%</label>
+      <label>Interest Rate (% p.a.): <span class="value-display" id="interestLabel">8.5</span></label>
       <input type="range" min="0.5" max="15" step="0.1" value="8.5" id="interestRate">
     </div>
 
     <div class="input-group">
-      <label>Other EMIs (Monthly): ₹<span id="otherEMIsLabel">0</span></label>
+      <label>Existing Monthly EMIs: <span class="value-display" id="otherEMIsLabel">0</span></label>
       <input type="range" min="0" max="1000000" step="1000" value="0" id="otherEMIs">
     </div>
 
     <div class="results">
-      <p>Your Home Loan Eligibility: ₹<span id="loanEligibility">0</span></p>
-      <p>Your Home Loan EMI will be: ₹<span id="emiAmount">0</span> /month</p>
+      <p>🏡 Your Eligible Loan Amount: <br><span id="loanEligibility">0</span></p>
+      <p>📅 Estimated Monthly EMI: <br><span id="emiAmount">0</span></p>
     </div>
 
-    <button onclick="alert('Application process started!')">Apply Now</button>
+    <button onclick="alert('Starting your loan application process...')">Apply Now for Home Loan</button>
   </div>
 
   <script>
-    const grossIncome = document.getElementById('grossIncome');
-    const tenure = document.getElementById('tenure');
-    const interestRate = document.getElementById('interestRate');
-    const otherEMIs = document.getElementById('otherEMIs');
+    const elements = {
+      grossIncome: document.getElementById('grossIncome'),
+      tenure: document.getElementById('tenure'),
+      interestRate: document.getElementById('interestRate'),
+      otherEMIs: document.getElementById('otherEMIs'),
+      labels: {
+        grossIncome: document.getElementById('grossIncomeLabel'),
+        tenure: document.getElementById('tenureLabel'),
+        interest: document.getElementById('interestLabel'),
+        otherEMIs: document.getElementById('otherEMIsLabel')
+      },
+      results: {
+        eligibility: document.getElementById('loanEligibility'),
+        emi: document.getElementById('emiAmount')
+      }
+    };
 
-    const grossIncomeLabel = document.getElementById('grossIncomeLabel');
-    const tenureLabel = document.getElementById('tenureLabel');
-    const interestLabel = document.getElementById('interestLabel');
-    const otherEMIsLabel = document.getElementById('otherEMIsLabel');
-
-    const loanEligibility = document.getElementById('loanEligibility');
-    const emiAmount = document.getElementById('emiAmount');
+    function formatINR(number) {
+      return new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(number);
+    }
 
     function calculate() {
-      const income = parseFloat(grossIncome.value);
-      const years = parseInt(tenure.value);
-      const rate = parseFloat(interestRate.value);
-      const other = parseFloat(otherEMIs.value);
+      const income = parseFloat(elements.grossIncome.value);
+      const years = parseInt(elements.tenure.value);
+      const rate = parseFloat(elements.interestRate.value);
+      const otherEmis = parseFloat(elements.otherEMIs.value);
 
-      const maxEMI = income * 0.4 - other;
+      const maxEMI = income * 0.4 - otherEmis;
+      
       if (maxEMI < 0) {
-        loanEligibility.textContent = '0';
-        emiAmount.textContent = '0';
+        elements.results.eligibility.textContent = '0';
+        elements.results.emi.textContent = '0';
         return;
       }
 
-      const r = rate / 12 / 100;
-      const n = years * 12;
+      const monthlyRate = rate / 12 / 100;
+      const months = years * 12;
+      const loanAmount = (maxEMI * (Math.pow(1 + monthlyRate, months) - 1)) / 
+                        (monthlyRate * Math.pow(1 + monthlyRate, months));
 
-      const eligibility = (maxEMI * (Math.pow(1 + r, n) - 1)) / (r * Math.pow(1 + r, n));
-      const emi = maxEMI;
-
-      grossIncomeLabel.textContent = income.toLocaleString('en-IN');
-      tenureLabel.textContent = years;
-      interestLabel.textContent = rate.toFixed(1);
-      otherEMIsLabel.textContent = other.toLocaleString('en-IN');
-
-      loanEligibility.textContent = Math.round(eligibility).toLocaleString('en-IN');
-      emiAmount.textContent = Math.round(emi).toLocaleString('en-IN');
+      // Update displays
+      elements.labels.grossIncome.textContent = formatINR(income);
+      elements.labels.tenure.textContent = years;
+      elements.labels.interest.textContent = rate.toFixed(1);
+      elements.labels.otherEMIs.textContent = formatINR(otherEmis);
+      
+      elements.results.eligibility.textContent = `₹${formatINR(Math.round(loanAmount))}`;
+      elements.results.emi.textContent = `₹${formatINR(Math.round(maxEMI))}`;
     }
 
-    grossIncome.oninput = calculate;
-    tenure.oninput = calculate;
-    interestRate.oninput = calculate;
-    otherEMIs.oninput = calculate;
+    // Add event listeners
+    Object.values(elements).forEach(element => {
+      if (element instanceof HTMLInputElement) {
+        element.addEventListener('input', calculate);
+      }
+    });
 
     // Initial calculation
     calculate();
